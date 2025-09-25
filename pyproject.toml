@@ -6,6 +6,11 @@ authors = [{name="Francis Cianfrocca"}]
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "BSD-3-Clause"}
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: BSD-3-Clause License",
+	"Operating System :: OS Independent",
+]
 
 [build-system]
 requires = ["setuptools", "wheel"]
