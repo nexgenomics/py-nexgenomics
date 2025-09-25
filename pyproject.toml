@@ -1,0 +1,22 @@
+[project]
+name = "nexgenomics"
+version = "0.1.0"
+description = "The official NexGenomics package for Python"
+authors = [{name="Francis Cianfrocca"}]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "BSD-3-Clause"}
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+"Homepage" = "https://github.com/nexgenomics/py-nexgenomics"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
