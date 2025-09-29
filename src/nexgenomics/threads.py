@@ -33,7 +33,6 @@ def ping():
 def new(*,metadata={},title):
     """
     """
-    #url = "https://agentstore.nexgenomics.ai/api/v0/threads"
     url = f"{_get_api_url_stem()}/api/v0/thread"
     data = {
         "metadata":metadata,
