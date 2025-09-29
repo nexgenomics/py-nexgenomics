@@ -1,4 +1,5 @@
 import unittest
+import dateutil
 
 from nexgenomics import threads
 
@@ -13,5 +14,10 @@ class TestThreads(unittest.TestCase):
         p = threads.new(title="AbCdE")
         print (p)
 
+    def test_get_list(self):
+        l = threads.get_list()
+        for l in l:
+            #print (type(dateutil.parser.parse(l["created_at"])))
+            print (l)
 
 

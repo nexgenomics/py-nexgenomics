@@ -2,21 +2,32 @@
 
 import os
 import requests
-
+import dateutil
 
 def _get_api_url_stem():
     return os.getenv("API_URL_STEM", "https://agenstore.nexgenomics.ai")
 def _get_api_auth_token():
     return os.getenv("API_AUTH_TOKEN", "not_a_valid_token")
 
+def _handle_api_error(resp):
+    if resp.status_code != 200:
+        try:
+            msg = resp.json()["msg"]
+        except:
+            msg = ""
+        raise Exception (f"status code {resp.status_code} {msg}")
+
 
 class Thread:
     """
     """
-    def __init__(self, *, threadid):
+    def __init__(self, *, threadid, creator="", created_at=None, updated_at=None):
         self.threadid = threadid
+        self.creator = creator
+        self.created_at = created_at
+        self.updated_at = updated_at
     def __repr__(self):
-        return f"Thread({self.threadid!r})"
+        return f"Thread({self.threadid!r} creator {self.creator!r} created {self.created_at} updated {self.updated_at})"
 
 def ping():
     """
@@ -46,3 +57,35 @@ def new(*,metadata={},title):
         raise Exception (f"status code {resp.status_code} {resp.json()["msg"]}")
     t = resp.json()
     return Thread(threadid=t["thread_id"])
+
+
+
+def get_list(query_parms={}):
+    """
+    """
+    url = f"{_get_api_url_stem()}/api/v0/threads/list"
+    data = {
+        # parameters will go here...
+    }
+    headers = {
+        "Authorization": f"Bearer {_get_api_auth_token()}",
+    }
+    # NB this is a post rather than a get, so we can pass query parms.
+    resp = requests.post(url,json=data,headers=headers)
+    _handle_api_error(resp)
+    if resp.status_code != 200:
+        raise Exception (f"status code {resp.status_code} {resp.json()["msg"]}")
+    threadlist = resp.json()
+
+    def parse_time(t):
+        try:
+            return dateutil.parser.parse(t)
+        except Exception as e:
+            print (e)
+            return None
+
+    return [Thread(threadid=x["id"],
+        creator=x["creator"],
+        created_at=parse_time(x["created_at"]),
+        updated_at=parse_time(x["updated_at"]))
+        for x in threadlist]
