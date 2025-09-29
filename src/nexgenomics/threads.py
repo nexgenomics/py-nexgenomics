@@ -53,8 +53,7 @@ def new(*,metadata={},title):
         "Authorization": f"Bearer {_get_api_auth_token()}",
     }
     resp = requests.put(url,json=data,headers=headers)
-    if resp.status_code != 200:
-        raise Exception (f"status code {resp.status_code} {resp.json()["msg"]}")
+    _handle_api_error(resp)
     t = resp.json()
     return Thread(threadid=t["thread_id"])
 
@@ -73,8 +72,7 @@ def get_list(query_parms={}):
     # NB this is a post rather than a get, so we can pass query parms.
     resp = requests.post(url,json=data,headers=headers)
     _handle_api_error(resp)
-    if resp.status_code != 200:
-        raise Exception (f"status code {resp.status_code} {resp.json()["msg"]}")
+
     threadlist = resp.json()
 
     def parse_time(t):
