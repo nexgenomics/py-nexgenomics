@@ -3,3 +3,7 @@ src/nexgenomics/__pycache__/
 dist/
 build/
 *.pyc
+
+# docs build artifacts
+docs/_build/
+docs/.doctrees/
