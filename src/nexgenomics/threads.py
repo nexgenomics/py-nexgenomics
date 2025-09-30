@@ -3,20 +3,7 @@
 import os
 import requests
 import dateutil
-
-def _get_api_url_stem():
-    return os.getenv("API_URL_STEM", "https://agentstore.nexgenomics.ai")
-def _get_api_auth_token():
-    return os.getenv("API_AUTH_TOKEN", "not_a_valid_token")
-
-def _handle_api_error(resp):
-    if resp.status_code != 200:
-        try:
-            msg = resp.json()["msg"]
-        except:
-            msg = ""
-        raise Exception (f"status code {resp.status_code} {msg}")
-
+from . import _internals
 
 class Thread:
     """
@@ -30,59 +17,59 @@ class Thread:
         return f"Thread({self.threadid!r} creator {self.creator!r} created {self.created_at} updated {self.updated_at})"
 
     def post_message(self,m):
-        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/message"
-        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        url = f"{_internals._get_api_url_stem()}/api/v0/thread/{self.threadid}/message"
+        headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
         data = {
             "msg": m,
         }
         resp = requests.post(url,json=data,headers=headers)
-        _handle_api_error(resp)
+        _internals._handle_api_error(resp)
         return resp.json()["id"]
 
     def get_messages(self,m):
-        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/messages"
-        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        url = f"{_internals._get_api_url_stem()}/api/v0/thread/{self.threadid}/messages"
+        headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
         resp = requests.get(url,headers=headers)
-        _handle_api_error(resp)
+        _internals._handle_api_error(resp)
         print (resp)
         return resp.json()
 
     def call_assistant(self,*,message="",assistant={},context=[]):
-        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/assistant"
-        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        url = f"{_internals._get_api_url_stem()}/api/v0/thread/{self.threadid}/assistant"
+        headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
         data = {
             "msg": message,
             "assistant": assistant,
             "context": context,
         }
         resp = requests.post(url,json=data,headers=headers)
-        _handle_api_error(resp)
+        _internals._handle_api_error(resp)
         return resp.json()
 
 def ping():
     """
     """
-    url = f"{_get_api_url_stem()}/api/v0/ping"
+    url = f"{_internals._get_api_url_stem()}/api/v0/ping"
     headers = {
-        "Authorization": f"Bearer {_get_api_auth_token()}",
+        "Authorization": f"Bearer {_internals._get_api_auth_token()}",
     }
     resp = requests.get(url,headers=headers)
-    _handle_api_error(resp)
+    _internals._handle_api_error(resp)
     return resp.json()
 
 def new(*,metadata={},title):
     """
     """
-    url = f"{_get_api_url_stem()}/api/v0/thread"
+    url = f"{_internals._get_api_url_stem()}/api/v0/thread"
     data = {
         "metadata":metadata,
         "title":title,
     }
     headers = {
-        "Authorization": f"Bearer {_get_api_auth_token()}",
+        "Authorization": f"Bearer {_internals._get_api_auth_token()}",
     }
     resp = requests.put(url,json=data,headers=headers)
-    _handle_api_error(resp)
+    _internals._handle_api_error(resp)
     t = resp.json()
     return Thread(threadid=t["thread_id"])
 
@@ -91,16 +78,16 @@ def new(*,metadata={},title):
 def get_list(query_parms={}):
     """
     """
-    url = f"{_get_api_url_stem()}/api/v0/threads/list"
+    url = f"{_internals._get_api_url_stem()}/api/v0/threads/list"
     data = {
         # parameters will go here...
     }
     headers = {
-        "Authorization": f"Bearer {_get_api_auth_token()}",
+        "Authorization": f"Bearer {_internals._get_api_auth_token()}",
     }
     # NB this is a post rather than a get, so we can pass query parms.
     resp = requests.post(url,json=data,headers=headers)
-    _handle_api_error(resp)
+    _internals._handle_api_error(resp)
 
     threadlist = resp.json()
 
