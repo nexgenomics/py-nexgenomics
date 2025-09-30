@@ -5,7 +5,7 @@ import requests
 import dateutil
 
 def _get_api_url_stem():
-    return os.getenv("API_URL_STEM", "https://agenstore.nexgenomics.ai")
+    return os.getenv("API_URL_STEM", "https://agentstore.nexgenomics.ai")
 def _get_api_auth_token():
     return os.getenv("API_AUTH_TOKEN", "not_a_valid_token")
 
