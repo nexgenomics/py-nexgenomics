@@ -3,6 +3,13 @@
 
 import requests
 from typing import Union
+from . import _internals
+
+
+def get_agents():
+    print ("balls")
+
+
 
 
 class Agentstore:
