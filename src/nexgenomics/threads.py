@@ -29,6 +29,36 @@ class Thread:
     def __repr__(self):
         return f"Thread({self.threadid!r} creator {self.creator!r} created {self.created_at} updated {self.updated_at})"
 
+    def post_message(self,m):
+        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/message"
+        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        data = {
+            "msg": m,
+        }
+        resp = requests.post(url,json=data,headers=headers)
+        _handle_api_error(resp)
+        return resp.json()["id"]
+
+    def get_messages(self,m):
+        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/messages"
+        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        resp = requests.get(url,headers=headers)
+        _handle_api_error(resp)
+        print (resp)
+        return resp.json()
+
+    def call_assistant(self,*,message="",assistant={},context=[]):
+        url = f"{_get_api_url_stem()}/api/v0/thread/{self.threadid}/assistant"
+        headers = {"Authorization": f"Bearer {_get_api_auth_token()}"}
+        data = {
+            "msg": message,
+            "assistant": assistant,
+            "context": context,
+        }
+        resp = requests.post(url,json=data,headers=headers)
+        _handle_api_error(resp)
+        return resp.json()
+
 def ping():
     """
     """
@@ -37,8 +67,7 @@ def ping():
         "Authorization": f"Bearer {_get_api_auth_token()}",
     }
     resp = requests.get(url,headers=headers)
-    if resp.status_code != 200:
-        raise Exception (f"status code {resp.status_code}")
+    _handle_api_error(resp)
     return resp.json()
 
 def new(*,metadata={},title):
@@ -78,8 +107,7 @@ def get_list(query_parms={}):
     def parse_time(t):
         try:
             return dateutil.parser.parse(t)
-        except Exception as e:
-            print (e)
+        except:
             return None
 
     return [Thread(threadid=x["id"],
