@@ -44,6 +44,10 @@ def generate_agent_token(id:str, title:str=""):
     Generate and return an authentication token for an agent.
     Note that the returned token is security-sensitive and must be protected.
     There is no ability to retrieve the token string after it has been generated.
+
+    Returns a dict with the new token string in the member "token".
+    Be very careful with this function, as it rate-limits the tokens you can create,
+    and there is no way to retrieve the token value after this function returns.
     """
 
     url = f"{_internals._get_api_url_stem()}/api/v0/agent/{id}/token"
@@ -58,3 +62,16 @@ def generate_agent_token(id:str, title:str=""):
     return new_token
 
 
+
+
+def get_agent_tokens(id:str):
+    """
+    Returns a list of token metadata for the supplied agent ID.
+    """
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/{id}/tokens"
+    headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
+
+    resp = requests.get(url,headers=headers)
+    _internals._handle_api_error(resp)
+
+    return resp.json()
