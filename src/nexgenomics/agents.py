@@ -3,6 +3,8 @@
 import requests
 from . import _internals
 
+from typing import List,Union
+
 
 def get_agents():
     url = f"{_internals._get_api_url_stem()}/api/v0/agents"
@@ -75,3 +77,31 @@ def get_agent_tokens(id:str):
     _internals._handle_api_error(resp)
 
     return resp.json()
+
+def post_agent_sentences(id:str,sentences:Union[List[str],List[bytes]]):
+    """
+    Send a list of sentences up to the specified agent.
+    """
+    r = []
+    for s in sentences:
+        if isinstance(s,str):
+            r.append(s)
+        elif isinstance(s,bytes):
+            r.append(s.decode('utf-8',errors='replace'))
+        else:
+            raise TypeError (f"item must be str or bytes, got {type(s)}")
+
+
+    r2 = [s.replace("\r\n","\n") for s in r]
+    r3 = "\n".join(r2)+"\n"
+
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/{id}/sentences"
+    headers = {
+        "Authorization": f"Bearer {_internals._get_api_auth_token()}",
+        "Content-type": "application/octet-stream"
+    }
+    resp = requests.post(url,headers=headers,data=r3)
+    _internals._handle_api_error(resp)
+
+    return resp.json()
+
