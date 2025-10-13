@@ -10,3 +10,51 @@ def get_agents():
     resp = requests.get(url,headers=headers)
     _internals._handle_api_error(resp)
     return resp.json()
+
+
+def hire_agent(id:str, *, title:str="", desc:str=""):
+    """
+    Create an agent given an image ID.
+    The id (which is a UUID) is given as the first parameter.
+    Optional (but recommended) parameters are title and desc.
+    """
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/hire"
+    headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
+    body = {
+        "template_id":id,
+        "instance_title":title.strip(),
+        "instance_desc":desc.strip(),
+        "short_expiration":True,
+    }
+    resp = requests.put(url,headers=headers,json=body)
+    _internals._handle_api_error(resp)
+    new_agent = resp.json()
+
+
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/{new_agent["id"]}/activateapionly"
+    resp = requests.post(url,headers=headers,json={})
+    _internals._handle_api_error(resp)
+
+
+    return new_agent
+
+
+def generate_agent_token(id:str, title:str=""):
+    """
+    Generate and return an authentication token for an agent.
+    Note that the returned token is security-sensitive and must be protected.
+    There is no ability to retrieve the token string after it has been generated.
+    """
+
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/{id}/token"
+    headers = {"Authorization": f"Bearer {_internals._get_api_auth_token()}"}
+    body = {
+        "title":title.strip(),
+    }
+    resp = requests.post(url,headers=headers,json=body)
+    _internals._handle_api_error(resp)
+
+    new_token = resp.json()
+    return new_token
+
+
