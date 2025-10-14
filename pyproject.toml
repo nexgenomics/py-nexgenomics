@@ -29,3 +29,5 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[project.scripts]
+nexgenomics = "nexgenomics.cli:main"
