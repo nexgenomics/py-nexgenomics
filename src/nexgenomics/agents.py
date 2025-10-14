@@ -81,6 +81,7 @@ def get_agent_tokens(id:str):
 def post_agent_sentences(id:str,sentences:Union[List[str],List[bytes]]):
     """
     Send a list of sentences up to the specified agent.
+    By batching a number of sentences into a list, this variant can save on network traffic.
     """
     r = []
     for s in sentences:
@@ -104,4 +105,27 @@ def post_agent_sentences(id:str,sentences:Union[List[str],List[bytes]]):
     _internals._handle_api_error(resp)
 
     return resp.json()
+
+
+
+
+def post_agent_sentence(id:str,sentence:str):
+    """
+    Send a single sentence up to the specified agent.
+    Compared to post_agent_sentences, this variant can send sentences with embedded newlines.
+    """
+
+    s2 = sentence.replace("\r\n","\n")
+
+    url = f"{_internals._get_api_url_stem()}/api/v0/agent/{id}/sentence"
+    headers = {
+        "Authorization": f"Bearer {_internals._get_api_auth_token()}",
+        "Content-type": "application/octet-stream"
+    }
+    resp = requests.post(url,headers=headers,data=s2)
+    _internals._handle_api_error(resp)
+
+    return resp.json()
+
+
 
