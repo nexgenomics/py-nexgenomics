@@ -129,3 +129,7 @@ def post_agent_sentence(id:str,sentence:str):
 
 
 
+class Agent:
+    def __init__(self):
+        print ("hello")
+
