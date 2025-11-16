@@ -13,6 +13,8 @@ def get_agents():
     _internals._handle_api_error(resp)
     return resp.json()
 
+def list():
+    return get_agents()
 
 def hire_agent(id:str, *, title:str="", desc:str=""):
     """
