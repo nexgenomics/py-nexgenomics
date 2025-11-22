@@ -1,6 +1,7 @@
 
 
 import requests
+import json
 from . import _internals
 
 from typing import List,Union
@@ -175,4 +176,17 @@ def post_sentences(sentences:Union[List[str],List[bytes]]):
 
     url = "api/v0/agent/sentences"
     return _internals.post(url=url,data=r3.encode('utf-8'),content_type="application/octet-stream")
+
+
+
+
+# TEMPORARY TESTERS
+def send_msg(msg:str):
+    url = "api/v0/agent/msg"
+    d = {
+        "msg": msg
+    }
+    print(json.dumps(d))
+    r = _internals.post(url=url, data=d)
+    print (r)
 

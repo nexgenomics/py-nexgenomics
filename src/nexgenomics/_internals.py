@@ -79,7 +79,11 @@ def post(url:str, data:bytes, content_type:str="application/json"):
         "Authorization": f"Bearer {_get_api_auth_token()}",
         "Content-type": content_type
     }
-    resp = requests.post(url,headers=headers,data=data)
+
+    if content_type == "application/json":
+        resp = requests.post(url,headers=headers,json=data)
+    else:
+        resp = requests.post(url,headers=headers,data=data)
     _handle_api_error(resp)
 
     return resp.json()

@@ -1,6 +1,6 @@
 [project]
 name = "nexgenomics"
-version = "0.2.2"
+version = "0.2.4"
 description = "The official NexGenomics package for Python"
 authors = [{name="Francis Cianfrocca"}]
 readme = "README.md"
