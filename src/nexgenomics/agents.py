@@ -144,6 +144,16 @@ class Agent:
 
 
 
+def post_blob(blob:bytes):
+    """
+    Send a bytes-like object up to an agent which is identified by the agent token
+    specified in the runtime (which can be config file, environment, or programmatic).
+    This supports high-security environments where only the agent token is available,
+    by intentionally avoiding the need for an agent id or a principal-auth token.
+    """
+    ep = "api/v0/agent/blob"
+    return _internals.post (url=ep, content_type="application/octet-stream", data=blob)
+
 
 def post_sentence(sentence:str):
     """
